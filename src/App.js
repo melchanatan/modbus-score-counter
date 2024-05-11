@@ -12,14 +12,14 @@ function App() {
     console.log(data, error, isLoading)
     if (error) return <div>failed to load</div>
     if (isLoading) return <div>loading...</div>
-    if (data) return <div>hello</div>
+    if (data) return <div>{data.status}</div>
   }
 
   return (
     <div className="App">
       <header className="App-header">
         <p>
-          hello world
+          High score
         </p>
         <Data />
       </header>

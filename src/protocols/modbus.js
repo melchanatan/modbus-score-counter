@@ -1,22 +1,50 @@
 const express = require('express');
-const modbus = require("modbus-serial");
+const ModbusRTU = require("modbus-serial");
 var cors = require('cors');
 
 const app = express();
 app.use(cors({ origin: '*' }));
 
 const port = 3001;
+const usbPort = "/dev/tty.usbmodem1103"
 
-const client = new modbus();
+const client = new ModbusRTU();
 
-const read = () => {
-    client.readHoldingRegisters(5, 2)
-        .then(console.log);
+client.connectAsciiSerial(
+    usbPort, 
+    {
+        baudRate: 115200,
+    }, 
+);
+
+async function read () {
+    // try {
+        console.log("registry")
+
+        registry = await client.readHoldingRegisters(5, 2)
+        console.log(registry)
+
+        // return registry
+    // } catch (error) {
+    //     return {
+    //         status: 500,
+    //         message: error.message
+    //     }
+    // }
 }
 
-app.get('/', (req, res) => {
-    const data = read();
-    res.send(data);
+app.get('/', async (req, res) => {
+    const modbusRegistry = await read();
+
+    if (modbusRegistry.status === 500) {
+        res.sendStatus(500)
+        return
+    }
+
+    return res.send({
+        status: 200,
+        message: modbusRegistry
+    })
 })
 
 app.listen(port, () => {

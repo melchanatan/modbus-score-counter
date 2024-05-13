@@ -6,25 +6,24 @@ const app = express();
 app.use(cors({ origin: '*' }));
 
 const port = 3001;
-const usbPort = "/dev/tty.usbmodem1103"
+const usbPort = 'COM3';
 
 const client = new ModbusRTU();
 
 client.connectAsciiSerial(
-    usbPort, 
+    usbPort,
     {
         baudRate: 115200,
-    }, 
+    },
 );
 
-async function read () {
+async function read() {
     // try {
-        console.log("registry")
+    console.log("registry")
 
-        registry = await client.readHoldingRegisters(5, 2)
-        console.log(registry)
+    registry = await client.readHoldingRegisters(5, 2)
 
-        // return registry
+    // return registry
     // } catch (error) {
     //     return {
     //         status: 500,
@@ -49,4 +48,5 @@ app.get('/', async (req, res) => {
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
+
 })

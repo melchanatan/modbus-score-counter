@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import useSWR from 'swr'
-
-import './App.css';
+import Table from './components/Table';
+import './index.css';
 
 const backendPort = 3001;
 function App() {
@@ -18,10 +18,14 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
+        
+        {/* <label for="username">Username</label>
+        <input id="username" className="text-slate-500" type="text" /> */}
         <p>
           High score
         </p>
         <Data />
+        {/* <Table /> */}
       </header>
     </div>
   );

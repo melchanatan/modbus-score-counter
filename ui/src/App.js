@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
-import useSWR from 'swr'
-import Table from './components/Table';
+import useSWR from 'swr';
+import MoleBoard from './components/MoleBoard';
 import './index.css';
 
 const backendPort = 3001;
@@ -13,7 +13,7 @@ function App() {
 
     if (error) return <div>failed to load</div>
     if (isLoading) return <div>loading...</div>
-    if (data) return <div>{data.message}</div>
+    // if (data) return <div>{data.message}</div>
   }
 
   useEffect(() => {
@@ -30,11 +30,9 @@ function App() {
         
         {/* <label for="username">Username</label>
         <input id="username" className="text-slate-500" type="text" /> */}
-        <p>
-          High score
-        </p>
-        <Data />
-        {/* <Table /> */}
+     
+        {/* <Data /> */}
+        <MoleBoard />
       </header>
     </div>
   );

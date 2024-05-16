@@ -25,36 +25,26 @@ client.setTimeout(2000);
 
 async function read () {
     try {
-        const data = await client.readHoldingRegisters(0, 1)
-        return data
+        const registery = await client.readHoldingRegisters(0, 1)
+        return registery.data
     } catch (error) {
         console.log(error)
         return error
     }
-    
-}
-
-function write() {
-    // write the values 0, 0xffff to registers starting at address 5
-    // on device number 1.
-    client.writeRegisters(4, [0 , 0x000])
-        .then(read)
 }
 
 app.get('/read', async (req, res) => {
     const modbusRegistry = await read();
-    console.log("modbusRegistry")
-
     console.log(modbusRegistry)
-    // if (modbusRegistry.status === 500) {
-    //     res.sendStatus(500)
-    //     return
-    // }
+    if (modbusRegistry.status === 500) {
+        res.sendStatus(500)
+        return
+    }
 
-    // return res.send({
-    //     status: 200,
-    //     message: modbusRegistry
-    // })
+    return res.send({
+        status: 200,
+        message: modbusRegistry
+    })
 })
 
 app.listen(port, () => {

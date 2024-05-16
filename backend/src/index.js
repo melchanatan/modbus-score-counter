@@ -6,7 +6,7 @@ const app = express();
 app.use(cors({ origin: '*' }));
 
 const port = 3001;
-const usbPort = 'COM9';
+const usbPort = 'COM8';
 
 const client = new ModbusRTU();
 client.setID(0x15);
@@ -26,7 +26,17 @@ client.setTimeout(2000);
 async function read () {
     try {
         const registery = await client.readHoldingRegisters(0, 1)
-        return registery.data
+        console.log(registery)
+        const ActiveButtons = []
+
+        // Get index of 1s
+        registery.data.forEach((element, index) => {
+            if (element == 1) {
+                ActiveButtons.push(index)
+            }
+        });
+
+        return ActiveButtons 
     } catch (error) {
         console.log(error)
         return error
@@ -36,10 +46,10 @@ async function read () {
 app.get('/read', async (req, res) => {
     const modbusRegistry = await read();
     console.log(modbusRegistry)
-    if (modbusRegistry.status === 500) {
-        res.sendStatus(500)
-        return
-    }
+    // if (modbusRegistry.status === 500) {
+    //     res.sendStatus(500)
+    //     return
+    // }
 
     return res.send({
         status: 200,

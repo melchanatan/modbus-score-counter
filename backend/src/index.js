@@ -22,6 +22,7 @@ client.connectRTUBuffered(
     },
 );
 client.setTimeout(2000);
+const zeroPad = (num, places) => String(num).padStart(places, '0')
 
 async function read () {
     try {
@@ -29,12 +30,15 @@ async function read () {
         console.log(registery)
         const ActiveButtons = []
 
-        // Get index of 1s
-        registery.data.forEach((element, index) => {
-            if (element == 1) {
-                ActiveButtons.push(index)
+        const binaryCode = (registery.data >>> 0).toString(2)
+        const paddedBinaryCode = zeroPad(binaryCode, 4)
+        console.log(paddedBinaryCode)
+
+        for (let i = 0; i < paddedBinaryCode.length; i++) {
+            if (paddedBinaryCode[i] === '0') {
+                ActiveButtons.push(i)
             }
-        });
+        }
 
         return ActiveButtons 
     } catch (error) {

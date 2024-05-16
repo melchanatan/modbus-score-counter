@@ -6,47 +6,57 @@ const app = express();
 app.use(cors({ origin: '*' }));
 
 const port = 3001;
-const usbPort = 'COM3';
+const usbPort = 'COM9';
 
 const client = new ModbusRTU();
+client.setID(0x15);
 
-client.connectAsciiSerial(
+client.connectRTUBuffered(
     usbPort,
     {
-        baudRate: 115200,
+        baudRate: 19200,
+        dataBits: 8,
+        parity: "even",
+        stopBits: 1,
+        startOfSlaveFrameChar: 0x47
     },
 );
+client.setTimeout(2000);
 
-async function read() {
-    // try {
-    console.log("registry")
-
-    registry = await client.readHoldingRegisters(5, 2)
-
-    // return registry
-    // } catch (error) {
-    //     return {
-    //         status: 500,
-    //         message: error.message
-    //     }
-    // }
+async function read () {
+    try {
+        const data = await client.readHoldingRegisters(0, 1)
+        return data
+    } catch (error) {
+        console.log(error)
+        return error
+    }
+    
 }
 
-app.get('/', async (req, res) => {
+function write() {
+    // write the values 0, 0xffff to registers starting at address 5
+    // on device number 1.
+    client.writeRegisters(4, [0 , 0x000])
+        .then(read)
+}
+
+app.get('/read', async (req, res) => {
     const modbusRegistry = await read();
+    console.log("modbusRegistry")
 
-    if (modbusRegistry.status === 500) {
-        res.sendStatus(500)
-        return
-    }
+    console.log(modbusRegistry)
+    // if (modbusRegistry.status === 500) {
+    //     res.sendStatus(500)
+    //     return
+    // }
 
-    return res.send({
-        status: 200,
-        message: modbusRegistry
-    })
+    // return res.send({
+    //     status: 200,
+    //     message: modbusRegistry
+    // })
 })
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
-
 })

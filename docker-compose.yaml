@@ -1,25 +1,27 @@
 services:
-    ui:
-      build:
-        context: ui
-        dockerfile: Dockerfile
-      volumes:
-          - ./ui/:/app
-      ports:
-        - "3000:3000"
-      user: 1000:1000
-      depends_on:
-        - backend
-        
-    backend:
-      tty: true
-      build: 
-        context: backend
-        dockerfile: Dockerfile
-      devices:
-        - COM3:/dev/ttyS2
-      volumes:
-      - ./backend/:/app
-      ports:
-        - "3001:3001"
-   
+  ui:
+    build:
+      context: ui
+      dockerfile: Dockerfile
+    volumes:
+        - ./ui/:/app
+    ports:
+      - "3000:3000"
+    user: 1000:1000
+    depends_on:
+      - backend
+      
+  backend:
+    tty: true
+    build: 
+      context: backend
+      dockerfile: Dockerfile
+    environment:
+      - UDEV=1
+    devices:
+      - '/dev:/dev'
+    volumes:
+    - ./backend/:/app
+    ports:
+      - "3001:3001"
+  
